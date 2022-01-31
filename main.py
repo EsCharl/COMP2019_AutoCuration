@@ -28,7 +28,11 @@ video_seconds = get_sec(video_time)
 # Clip video and ask user to enter start and end time
 modified_video = "modified.mp4"
 start_time = int(input("Enter start time:\n>> "))
-end_time = int(input("Enter end time:\n>> "))
+select_time = int(input("1: Whole video | 2: Select specific time\n"))
+if select_time == 1:
+    end_time = video_seconds
+else:
+    end_time = int(input("Enter end time:\n>> "))
 if start_time >= 0 and 0 < end_time <= video_seconds:
     ffmpeg_extract_subclip(video_file, start_time, end_time, targetname=modified_video)
 else:
