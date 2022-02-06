@@ -14,7 +14,7 @@ def check_blur(frames, height):
     elif (height == 144) and (valueUpdated > 600):
         return image_sharp
     else:
-        return Nonea
+        return None
 
 
 def checkBlur_final(frames, height):
