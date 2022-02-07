@@ -1,8 +1,10 @@
+#!/usr/bin/env 3.9
 import cv2
 import os.path
 import shutil
 import datetime
 import random
+import argparse
 import numpy as np
 from moviepy.editor import VideoFileClip
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
@@ -11,7 +13,6 @@ import CheckBlurness
 import Enhancement
 
 path = "Results"  # Folder to store results
-video_file = "Dataset/high.mp4"
 modified_video = "modified.mp4"
 countOriginal = 1
 countSharpen = 1
@@ -30,34 +31,41 @@ else:
     os.mkdir("Removed")
 
 
+parser = argparse.ArgumentParser(description='Smart Camera Command Prompt')
+parser.add_argument("-vf", "--videofile", required=True, type=str, help="This is your video file to process")
+parser.add_argument("-st", "--starttime", default=0, type=int, help="Start time of video file to process")
+parser.add_argument("-et", "--endtime", required=True, type=int, help="End time of video file to process")
+parser.add_argument("-sr", "--superres", default=1, type=int, help="Super resolution model to upscale keyframes")
+parser.add_argument("-he", "--histequal", default=0, type=int, help="Automatically adjust contrast of keyframes")
+parser.add_argument("-ae", "--autoenhance", default=1, type=int, help="Auto enhancement for keyframes")
+
+args = parser.parse_args()
+video_file = args.videofile
+start_time = args.starttime
+end_time = args.endtime
+superResponse = args.superres
+histResponse = args.histequal
+autoResponse = args.autoenhance
+
+
+# Video information
 def get_sec(time_str):
     h, m, s = time_str.split(':')
     return int(h) * 3600 + int(m) * 60 + float(s)
 
 
-# Video time information
 video_time = str(datetime.timedelta(seconds=VideoFileClip(video_file).duration))
 print("Video length: " + video_time)
 video_seconds = get_sec(video_time)
-
-# Take user input for video clipping
-start_time = int(input("Enter start time:\n>> "))
-select_time = int(input("1: Whole video | 2: Select specific time\n"))
-if select_time == 1:
-    end_time = video_seconds
-else:
-    end_time = int(input("Enter end time:\n>> "))
-
 if start_time >= 0 and 0 < end_time <= video_seconds:
     ffmpeg_extract_subclip(video_file, start_time, end_time, targetname=modified_video)
 else:
-    print("Invalid input")
+    print("[-] Invalid input for clipping video duration")
     exit()
+
 
 # Super resolution pre-trained model response
 superCounter = 1
-print("1: ESPCN | 2:FSRCNN | 3: LapSRN")
-superResponse = int(input("Which pre-trained model do you prefer?\n>> "))
 if superResponse == 1:
     superCounter = 1
 elif superResponse == 2:
@@ -65,30 +73,31 @@ elif superResponse == 2:
 elif superResponse == 3:
     superCounter = 3
 else:
-    print("Invalid input")
+    print("[-] Invalid input for super resolution model")
     exit()
+
 
 # Histogram Equalizer response
 histCounter = 0
-histResponse = int(input("Do you want to apply Histogram Equalizer?\n>> "))
 if histResponse == 1:
     histCounter = 1
 elif histResponse == 0:
     histCounter = 0
 else:
-    print("Invalid input")
+    print("[-] Invalid input for histogram equalizer")
     exit()
 
+
 # Auto Enhancement response
-autoCounter = 0
-autoResponse = int(input("Do you want to apply Auto Enhancement?\n>> "))
+autoCounter = 1
 if autoResponse == 1:
     autoCounter = 1
 elif autoResponse == 0:
     autoCounter = 0
 else:
-    print("Invalid input")
+    print("[-] Invalid input for auto enhancement")
     exit()
+
 
 # ================
 # Motion Detection
@@ -124,7 +133,6 @@ while cap.isOpened():
     if success is False:
         ImageHash.compare_images("Results/Final 8.jpeg")
         keyframes_lists = os.listdir("Results")
-        # print(keyframes_lists)
         ImageHash.compare_images("Results/" + keyframes_lists[random.randint(0, len(keyframes_lists))])
         print("\nProcess finished!")
     # Skip frames function
@@ -172,7 +180,7 @@ while cap.isOpened():
 
         if keyframes is not None:
             cv2.imwrite(os.path.join(path, "Final " + str(countFinal) + ".jpeg"), keyframes,
-                        [int(cv2.IMWRITE_JPEG_QUALITY), 85])
+                        [int(cv2.IMWRITE_JPEG_QUALITY), 90])
             countFinal += 1
         else:
             continue
