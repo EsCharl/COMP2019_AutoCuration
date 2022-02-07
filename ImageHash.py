@@ -8,7 +8,7 @@ import shutil
 def compare_images():
     path = "Results"
     new_path = "Removed"
-    location = "Results/Final 2.jpeg"
+    location = "Results/Final 8.jpeg"
     hash_size = 8
     similarity = 40
     fnames = os.listdir(path)

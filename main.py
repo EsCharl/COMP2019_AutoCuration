@@ -1,5 +1,6 @@
 import cv2
-import os
+import os.path
+import shutil
 import datetime
 import numpy as np
 from moviepy.editor import VideoFileClip
@@ -9,13 +10,23 @@ import CheckBlurness
 import Enhancement
 
 path = "Results"  # Folder to store results
-os.mkdir("Results")  # Create folder to store final results
-os.mkdir("Removed")  # Create folder to store removed results
 video_file = "Dataset/high.mp4"
 modified_video = "modified.mp4"
 countOriginal = 1
 countSharpen = 1
 countFinal = 1
+
+if os.path.isdir("Results"):
+    shutil.rmtree("Results")
+    os.mkdir("Results")
+else:
+    os.mkdir("Results")
+
+if os.path.isdir("Removed"):
+    shutil.rmtree("Removed")
+    os.mkdir("Removed")
+else:
+    os.mkdir("Removed")
 
 
 def get_sec(time_str):
@@ -115,6 +126,8 @@ while cap.isOpened():
     if success is False:
         ImageHash.compare_images()
         print("\nProcess finished!")
+        keyframes_lists = os.listdir('Results')
+        print(keyframes_lists)
     # Skip frames function
     cf = cap.get(cv2.CAP_PROP_POS_FRAMES) - 1
     cap.set(cv2.CAP_PROP_POS_FRAMES, cf + fps)
