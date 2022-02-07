@@ -2,6 +2,7 @@ import cv2
 import os.path
 import shutil
 import datetime
+import random
 import numpy as np
 from moviepy.editor import VideoFileClip
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
@@ -39,7 +40,6 @@ video_time = str(datetime.timedelta(seconds=VideoFileClip(video_file).duration))
 print("Video length: " + video_time)
 video_seconds = get_sec(video_time)
 
-
 # Take user input for video clipping
 start_time = int(input("Enter start time:\n>> "))
 select_time = int(input("1: Whole video | 2: Select specific time\n"))
@@ -53,7 +53,6 @@ if start_time >= 0 and 0 < end_time <= video_seconds:
 else:
     print("Invalid input")
     exit()
-
 
 # Super resolution pre-trained model response
 superCounter = 1
@@ -91,7 +90,6 @@ else:
     print("Invalid input")
     exit()
 
-
 # ================
 # Motion Detection
 # ================
@@ -124,10 +122,11 @@ def background_subtraction(imgBS_one, imgBS_two):
 while cap.isOpened():
     success, img2 = cap.read()
     if success is False:
-        ImageHash.compare_images()
+        ImageHash.compare_images("Results/Final 8.jpeg")
+        keyframes_lists = os.listdir("Results")
+        # print(keyframes_lists)
+        ImageHash.compare_images("Results/" + keyframes_lists[random.randint(0, len(keyframes_lists))])
         print("\nProcess finished!")
-        keyframes_lists = os.listdir('Results')
-        print(keyframes_lists)
     # Skip frames function
     cf = cap.get(cv2.CAP_PROP_POS_FRAMES) - 1
     cap.set(cv2.CAP_PROP_POS_FRAMES, cf + fps)

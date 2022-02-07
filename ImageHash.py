@@ -5,21 +5,18 @@ from PIL import Image
 import shutil
 
 
-def compare_images():
+def compare_images(location):
     path = "Results"
     new_path = "Removed"
-    location = "Results/Final 8.jpeg"
     hash_size = 8
-    similarity = 40
+    similarity = 50
     fnames = os.listdir(path)
     threshold = 1 - similarity / 100
     diff_limit = int(threshold * (hash_size ** 2))
 
-    # print("testing")
     with Image.open(location) as img:
         hash1 = imagehash.average_hash(img, hash_size).hash
 
-    # print("Finding Similar Images to {} \n".format(location))
     for image in fnames:
         with Image.open(os.path.join(path, image)) as img:
             hash2 = imagehash.average_hash(img, hash_size).hash
@@ -31,5 +28,3 @@ def compare_images():
                 src_path = path + "/" + image
                 dst_path = new_path + "/" + image
                 shutil.move(src_path, dst_path)
-
-
