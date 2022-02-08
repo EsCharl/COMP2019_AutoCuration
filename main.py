@@ -30,7 +30,6 @@ if os.path.isdir("Removed"):
 else:
     os.mkdir("Removed")
 
-
 parser = argparse.ArgumentParser(description='Smart Camera Command Prompt')
 parser.add_argument("-vf", "--videofile", required=True, type=str, help="This is your video file to process")
 parser.add_argument("-st", "--starttime", default=0, type=int, help="Start time of video file to process")
@@ -63,7 +62,6 @@ else:
     print("[-] Invalid input for clipping video duration")
     exit()
 
-
 # Super resolution pre-trained model response
 superCounter = 1
 if superResponse == 1:
@@ -76,7 +74,6 @@ else:
     print("[-] Invalid input for super resolution model")
     exit()
 
-
 # Histogram Equalizer response
 histCounter = 0
 if histResponse == 1:
@@ -86,7 +83,6 @@ elif histResponse == 0:
 else:
     print("[-] Invalid input for histogram equalizer")
     exit()
-
 
 # Auto Enhancement response
 autoCounter = 1
@@ -98,11 +94,11 @@ else:
     print("[-] Invalid input for auto enhancement")
     exit()
 
-
 # ================
 # Motion Detection
 # ================
 # Capture frames from modified (clipped) video
+print("[+] Running...")
 cap = cv2.VideoCapture(modified_video)
 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 success, img1 = cap.read()
@@ -134,7 +130,11 @@ while cap.isOpened():
         ImageHash.compare_images("Results/Final 8.jpeg")
         keyframes_lists = os.listdir("Results")
         ImageHash.compare_images("Results/" + keyframes_lists[random.randint(0, len(keyframes_lists))])
-        print("\nProcess finished!")
+        print("Images Captured: " + str(countOriginal))
+        print("Images Filtered: " + str(countSharpen))
+        print("Images Shortlisted: " + str(countFinal))
+        print("\n[+] Process finished!")
+        # Call mega detector function here
     # Skip frames function
     cf = cap.get(cv2.CAP_PROP_POS_FRAMES) - 1
     cap.set(cv2.CAP_PROP_POS_FRAMES, cf + fps)
@@ -185,14 +185,10 @@ while cap.isOpened():
         else:
             continue
 
-    cv2.imshow("Output", img1)
+    # cv2.imshow("Output", img1)
     img1 = img2
     success, img2 = cap.read()
-    cv2.waitKey(1)
-
-    # print("Images Captured: " + str(countOriginal))
-    # print("Images Filtered: " + str(countSharpen))
-    # print("Images Shortlisted: " + str(countFinal))
+    # cv2.waitKey(1)
 
 cv2.destroyAllWindows()
 cap.release()
