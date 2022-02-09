@@ -13,7 +13,6 @@ import CheckBlurness
 import Enhancement
 
 path = "Results"  # Folder to store results
-modified_video = "modified.mp4"
 countOriginal = 1
 countSharpen = 1
 countFinal = 1
@@ -53,6 +52,7 @@ def get_sec(time_str):
     return int(h) * 3600 + int(m) * 60 + float(s)
 
 
+modified_video = video_file + "_modified.mp4"
 video_time = str(datetime.timedelta(seconds=VideoFileClip(video_file).duration))
 print("Video length: " + video_time)
 video_seconds = get_sec(video_time)
