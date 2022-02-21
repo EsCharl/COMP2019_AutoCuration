@@ -4,6 +4,7 @@ import os.path
 import shutil
 import datetime
 import random
+import sys
 import argparse
 import numpy as np
 from moviepy.editor import VideoFileClip
@@ -29,21 +30,40 @@ if os.path.isdir("Removed"):
 else:
     os.mkdir("Removed")
 
-parser = argparse.ArgumentParser(description='Smart Camera Command Prompt')
-parser.add_argument("-vf", "--videofile", required=True, type=str, help="This is your video file to process")
-parser.add_argument("-st", "--starttime", default=0, type=int, help="Start time of video file to process")
-parser.add_argument("-et", "--endtime", required=True, type=int, help="End time of video file to process")
-parser.add_argument("-sr", "--superres", default=1, type=int, help="Super resolution model to upscale keyframes")
-parser.add_argument("-he", "--histequal", default=0, type=int, help="Automatically adjust contrast of keyframes")
-parser.add_argument("-ae", "--autoenhance", default=1, type=int, help="Auto enhancement for keyframes")
+# parser = argparse.ArgumentParser(description='Smart Camera Command Prompt')
+# parser.add_argument("-vf", "--videofile", required=True, type=str, help="This is your video file to process")
+# parser.add_argument("-st", "--starttime", default=0, type=int, help="Start time of video file to process")
+# parser.add_argument("-et", "--endtime", required=True, type=int, help="End time of video file to process")
+# parser.add_argument("-sr", "--superres", default=1, type=int, help="Super resolution model to upscale keyframes")
+# parser.add_argument("-he", "--histequal", default=0, type=int, help="Automatically adjust contrast of keyframes")
+# parser.add_argument("-ae", "--autoenhance", default=1, type=int, help="Auto enhancement for keyframes")
+#
+# args = parser.parse_args()
+# video_file = args.videofile
+# start_time = args.starttime
+# end_time = args.endtime
+# superResponse = args.superres
+# histResponse = args.histequal
+# autoResponse = args.autoenhance
 
-args = parser.parse_args()
-video_file = args.videofile
-start_time = args.starttime
-end_time = args.endtime
-superResponse = args.superres
-histResponse = args.histequal
-autoResponse = args.autoenhance
+video_file = sys.argv[1]
+start_time = int(sys.argv[2])
+end_time = int(sys.argv[3])
+superResponse = int(sys.argv[4])
+histResponse = int(sys.argv[5])
+autoResponse = int(sys.argv[6])
+
+if start_time < 0:
+    start_time = 0
+
+if superResponse <= 0:
+    superResponse = 1
+
+if autoResponse <= 0:
+    autoResponse = 1
+
+if histResponse < 0:
+    histResponse = 0
 
 
 # Video information
