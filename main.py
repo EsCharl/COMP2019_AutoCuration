@@ -5,7 +5,6 @@ import shutil
 import datetime
 import random
 import sys
-import argparse
 import numpy as np
 from moviepy.editor import VideoFileClip
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
@@ -13,22 +12,9 @@ import ImageHash
 import CheckBlurness
 import Enhancement
 
-path = "Results"  # Folder to store results
 countOriginal = 1
 countSharpen = 1
 countFinal = 1
-
-if os.path.isdir("Results"):
-    shutil.rmtree("Results")
-    os.mkdir("Results")
-else:
-    os.mkdir("Results")
-
-if os.path.isdir("Removed"):
-    shutil.rmtree("Removed")
-    os.mkdir("Removed")
-else:
-    os.mkdir("Removed")
 
 # parser = argparse.ArgumentParser(description='Smart Camera Command Prompt')
 # parser.add_argument("-vf", "--videofile", required=True, type=str, help="This is your video file to process")
@@ -37,7 +23,6 @@ else:
 # parser.add_argument("-sr", "--superres", default=1, type=int, help="Super resolution model to upscale keyframes")
 # parser.add_argument("-he", "--histequal", default=0, type=int, help="Automatically adjust contrast of keyframes")
 # parser.add_argument("-ae", "--autoenhance", default=1, type=int, help="Auto enhancement for keyframes")
-#
 # args = parser.parse_args()
 # video_file = args.videofile
 # start_time = args.starttime
@@ -64,6 +49,20 @@ if autoResponse <= 0:
 
 if histResponse < 0:
     histResponse = 0
+
+result_path = video_file + "_Results"  # Folder to store results
+removed_path = video_file + "_Removed"
+if os.path.isdir(result_path):
+    shutil.rmtree(result_path)
+    os.mkdir(result_path)
+else:
+    os.mkdir(result_path)
+
+if os.path.isdir(removed_path):
+    shutil.rmtree(removed_path)
+    os.mkdir(removed_path)
+else:
+    os.mkdir(removed_path)
 
 
 # Video information
@@ -147,9 +146,9 @@ def background_subtraction(imgBS_one, imgBS_two):
 while cap.isOpened():
     success, img2 = cap.read()
     if success is False:
-        ImageHash.compare_images("Results/Final 8.jpeg")
-        keyframes_lists = os.listdir("Results")
-        ImageHash.compare_images("Results/" + keyframes_lists[random.randint(0, len(keyframes_lists))])
+        ImageHash.compare_images(video_file + "_Results/Final 8.jpeg", result_path, removed_path)
+        keyframes_lists = os.listdir(video_file + "_Results")
+        ImageHash.compare_images(video_file + "_Results/" + keyframes_lists[random.randint(0, len(keyframes_lists))], result_path, removed_path)
         print("Images Captured: " + str(countOriginal))
         print("Images Filtered: " + str(countSharpen))
         print("Images Shortlisted: " + str(countFinal))
@@ -199,7 +198,7 @@ while cap.isOpened():
             continue
 
         if keyframes is not None:
-            cv2.imwrite(os.path.join(path, "Final " + str(countFinal) + ".jpeg"), keyframes,
+            cv2.imwrite(os.path.join(result_path, "Final " + str(countFinal) + ".jpeg"), keyframes,
                         [int(cv2.IMWRITE_JPEG_QUALITY), 90])
             countFinal += 1
         else:

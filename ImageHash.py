@@ -5,9 +5,7 @@ from PIL import Image
 import shutil
 
 
-def compare_images(location):
-    path = "Results"
-    new_path = "Removed"
+def compare_images(location, path, new_path):
     hash_size = 8
     similarity = 50
     fnames = os.listdir(path)
