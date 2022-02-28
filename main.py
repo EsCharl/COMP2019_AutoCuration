@@ -148,10 +148,17 @@ while cap.isOpened():
     if success is False:
         ImageHash.compare_images(video_file + "_Results/Final 8.jpeg", result_path, removed_path)
         keyframes_lists = os.listdir(video_file + "_Results")
-        ImageHash.compare_images(video_file + "_Results/" + keyframes_lists[random.randint(0, len(keyframes_lists))], result_path, removed_path)
+        # print(keyframes_lists)
+        try:
+            ImageHash.compare_images(
+                video_file + "_Results/" + keyframes_lists[random.randint(0, len(keyframes_lists))], result_path,
+                removed_path)
+        except:
+            pass
+        keyframes_lists = os.listdir(video_file + "_Results")
         print("Images Captured: " + str(countOriginal))
-        print("Images Filtered: " + str(countSharpen))
-        print("Images Shortlisted: " + str(countFinal))
+        print("Images Filtered: " + str(countFinal))
+        print("Images Shortlisted: " + str(len(keyframes_lists)))
         print("\n[+] Process finished!")
         # Call mega detector function here
     # Skip frames function
